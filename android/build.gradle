@@ -37,7 +37,6 @@ buildscript {
 
 // Creating sources with comments
 task androidSourcesJar(type: Jar) {
-  classifier = 'sources'
   from android.sourceSets.main.java.srcDirs
 }
 
