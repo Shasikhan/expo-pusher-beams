@@ -14,6 +14,10 @@ import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.Exceptions
 import org.json.JSONObject
 
+import android.app.Notification
+import android.app.NotificationManager
+import android.os.Build
+
 class ExpoPusherBeamsModule : Module() {
     private val currentActivity
         get() = appContext.currentActivity ?: throw Exceptions.MissingActivity()
@@ -114,6 +118,36 @@ class ExpoPusherBeamsModule : Module() {
             stop()
             promise.resolve(null)
         }
+
+        AsyncFunction("getActiveNotifications") { promise: Promise ->
+            try {
+                val notificationManager = currentActivity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+                val activeNotifications = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    notificationManager.activeNotifications
+                } else {
+                    arrayOf()
+                }
+
+                val notificationsList = activeNotifications.map { sbn ->
+                    val notification = sbn.notification
+                    mapOf(
+                        "id" to sbn.id,
+                        "tag" to sbn.tag,
+                        "title" to notification.extras.getString(Notification.EXTRA_TITLE),
+                        "body" to notification.extras.getString(Notification.EXTRA_TEXT)
+                    )
+                }
+
+                // Optional: clear all notifications
+                notificationManager.cancelAll()
+
+                promise.resolve(notificationsList)
+            } catch (e: Exception) {
+                promise.reject("GET_NOTIFICATIONS_ERROR", e)
+            }
+        }
+
     }
 
     private fun setInstanceId(instanceId: String) {
