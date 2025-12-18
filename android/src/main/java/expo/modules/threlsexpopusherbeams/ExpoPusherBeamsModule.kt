@@ -17,6 +17,7 @@ import org.json.JSONObject
 import android.app.Notification
 import android.app.NotificationManager
 import android.os.Build
+import android.content.Context
 
 class ExpoPusherBeamsModule : Module() {
     private val currentActivity
@@ -144,7 +145,11 @@ class ExpoPusherBeamsModule : Module() {
 
                 promise.resolve(notificationsList)
             } catch (e: Exception) {
-                promise.reject("GET_NOTIFICATIONS_ERROR", e)
+                promise.reject(
+                        "NOTIFICATION_READ_FAILED",
+                        e.message,
+                        e
+                    )
             }
         }
 
