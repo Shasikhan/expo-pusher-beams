@@ -36,8 +36,8 @@ export async function setUserId(userId: string, token: string) {
   return await ExpoPusherBeamsModule.setUserId(userId, token);
 }
 
-export async function getActiveNotifications(userId: string, token: string) {
-  return await ExpoPusherBeamsModule.getActiveNotifications(userId, token);
+export async function getActiveNotifications() {
+  return await ExpoPusherBeamsModule.getActiveNotifications();
 }
 
 export async function stop() {
