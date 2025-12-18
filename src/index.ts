@@ -2,7 +2,7 @@ import {
   NativeModulesProxy,
   EventEmitter,
   Subscription,
-} from 'expo-modules-core';
+} from "expo-modules-core";
 
 // Import the native module. On web, it will be resolved to ExpoPusherBeams.web.ts
 // and on native platforms to ExpoPusherBeams.ts
@@ -10,12 +10,12 @@ import {
   NotificationEventPayload,
   NotificationEventPayloadAndroid,
   WebOptions,
-} from './ExpoPusherBeams.types';
-import ExpoPusherBeamsModule from './ExpoPusherBeamsModule';
-import { Platform } from 'react-native';
+} from "./ExpoPusherBeams.types";
+import ExpoPusherBeamsModule from "./ExpoPusherBeamsModule";
+import { Platform } from "react-native";
 
 export async function setInstanceId(id: string, webOptions?: WebOptions) {
-  if (Platform.OS === 'web')
+  if (Platform.OS === "web")
     return await ExpoPusherBeamsModule.setInstanceId(id, webOptions);
   else return await ExpoPusherBeamsModule.setInstanceId(id);
 }
@@ -36,6 +36,10 @@ export async function setUserId(userId: string, token: string) {
   return await ExpoPusherBeamsModule.setUserId(userId, token);
 }
 
+export async function getActiveNotifications(userId: string, token: string) {
+  return await ExpoPusherBeamsModule.getActiveNotifications(userId, token);
+}
+
 export async function stop() {
   return await ExpoPusherBeamsModule.stop();
 }
@@ -46,21 +50,21 @@ const emitter = new EventEmitter(
 
 const isParsedEventPayload = (
   event: NotificationEventPayload | NotificationEventPayloadAndroid
-): event is NotificationEventPayload => typeof event.userInfo !== 'string';
+): event is NotificationEventPayload => typeof event.userInfo !== "string";
 
 export function addNotificationListener(
   listener: (event: NotificationEventPayload) => void
 ): Subscription {
   return emitter.addListener<
     NotificationEventPayload | NotificationEventPayloadAndroid
-  >('onNotification', (event) => {
+  >("onNotification", (event) => {
     // Issue returning a nested object with Android. Therefore we are parsing the returned string into an object before calling any listeners
     if (!isParsedEventPayload(event)) {
       listener({
         ...event,
         userInfo: JSON.parse(
           event.userInfo
-        ) as NotificationEventPayload['userInfo'],
+        ) as NotificationEventPayload["userInfo"],
       });
     } else {
       listener(event);
@@ -69,7 +73,7 @@ export function addNotificationListener(
 }
 
 export function clearNotificationListeners() {
-  emitter.removeAllListeners('onNotification');
+  emitter.removeAllListeners("onNotification");
 }
 
 export { NotificationEventPayload };
