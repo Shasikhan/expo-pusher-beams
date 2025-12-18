@@ -134,7 +134,6 @@ class ExpoPusherBeamsModule : Module() {
                     val notification = sbn.notification
                     mapOf(
                         "id" to sbn.id,
-                        "publishId" to sbn.data.pusher.publishId,
                         "tag" to sbn.tag,
                         "title" to notification.extras.getString(Notification.EXTRA_TITLE),
                         "body" to notification.extras.getString(Notification.EXTRA_TEXT)
